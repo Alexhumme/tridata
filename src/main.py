@@ -34,46 +34,38 @@ class Tridata(tk.Tk):
         
         self.userbar:Userbar = Userbar(self.app_container)
         self.userbar.grid(row=0, sticky="nsew", padx=5, pady=5)
-        self.userbar.pointsCard.sendButton.config(command=self.draw_triangle)
+        self.userbar.pointsCard.sendButton.config(command=self.update_values)
 
-        self.plot_frame:ttk.Frame = PlotFrame(self.app_container)
+        self.plot_frame:PlotFrame = PlotFrame(self.app_container)
         self.plot_frame.grid(row=1, sticky="nsew", padx=5, pady=0)
         
     pass
     
-    def get_points(self) -> tuple:
-        x = [
-            self.userbar.pointsCard.axField.get(),
-            self.userbar.pointsCard.bxField.get(),
-            self.userbar.pointsCard.cxField.get(),
+    def get_points(self) -> list:
+        points = [
+            (
+                float(self.userbar.pointsCard.axField.get()),
+                float(self.userbar.pointsCard.ayField.get())
+            ),
+            (
+                float(self.userbar.pointsCard.bxField.get()),
+                float(self.userbar.pointsCard.byField.get())
+            ),
+            (
+                float(self.userbar.pointsCard.cyField.get()),
+                float(self.userbar.pointsCard.cyField.get())
+            ),
+            (
+                float(self.userbar.pointsCard.axField.get()),
+                float(self.userbar.pointsCard.ayField.get())
+            )
         ]
-        y = [
-            self.userbar.pointsCard.ayField.get(),
-            self.userbar.pointsCard.byField.get(),
-            self.userbar.pointsCard.cyField.get(),
-        ]
-        return (x,y)
-
-    def draw_triangle(self):
-        
-        x,y = self.get_points()
-
-        x = np.array(x)  # Coordenadas en el eje X
-        y = np.array(y)  # Coordenadas en el eje Y
-        
-        # Crear una figura y un eje
-        fig, ax = plt.subplots()
-
-        # Dibujar el triángulo
-        ax.fill(x, y, 'b')  # 'b' es el color azul, puedes cambiarlo
-        ax.set_aspect('equal', 'box')  # Asegura que el triángulo no se deforme
-        ax.set_xlim(-100, 300)  # Ajusta los límites en el eje X
-        ax.set_ylim(-100, 300)  # Ajusta los límites en el eje Y
-
-        # Incrustar la figura en Tkinter
-        canvas = FigureCanvasTkAgg(fig, master=self.plot_frame)  # Crear el lienzo con la figura
-        canvas.draw()  # Dibujar la figura en el lienzo
-        canvas.get_tk_widget().pack()  # Empaquetar el lienzo en la ventana Tkinter```
+        return points
+    
+    def update_values(self):
+        points = self.get_points()
+        self.plot_frame.draw_triangle(points)
+        self.userbar.distancesCard.update_distances(points)
 
 def main():
     app:Tridata = Tridata()
