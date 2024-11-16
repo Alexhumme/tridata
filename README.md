@@ -13,7 +13,7 @@
 Solo abrir el archivo ```dist/main.exe``` 
 ### desarrollo
 - clonar el proyecto
-- iniciar un punto entorno virtual ```python -m venv .venv```
-- activar entorno virtual ```.venv/Scripts/activate```
+- iniciar un nuevo entorno virtual ```python -m venv .venv```
+- activar entorno el virtual ```.venv/Scripts/activate```
 - instalar paquetes necesarios ```pip install tkinter matplotlib numpy```
 - correr la aplicacion ```python.exe  src/main.py```
