@@ -1,7 +1,7 @@
 # Tridata : Aplicacion para graficar triangulos 
 
 <center>
-<img src="https://imgur.com/a/tridata-jz2IJwn">
+<img src="https://i.imgur.com/P2Epgt4.jpeg">
 
 ## features
 -  Grafica triangulos
