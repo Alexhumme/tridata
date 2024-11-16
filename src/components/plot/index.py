@@ -1,7 +1,7 @@
 import tkinter.ttk as ttk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
-
+import tkinter as tk
 class PlotFrame(ttk.Frame):
     def __init__(self, master):
         super().__init__(master, style="Card.TFrame", padding=15, width=680, height=500)
@@ -10,6 +10,17 @@ class PlotFrame(ttk.Frame):
         self.fig, self.ax = plt.subplots()
         self.canvas = FigureCanvasTkAgg(self.fig, master=self)
         self.canvas.get_tk_widget().grid(row=0, column=0, columnspan=6)
+        self.canvas_widget = self.canvas.get_tk_widget()
+        self.canvas_widget.pack(fill=tk.BOTH, expand=True)
+        
+         # Variables para el arrastre
+        self.drag_start = None  # Para guardar la posición inicial del arrastre
+
+        # Vincular eventos de zoom
+        self.canvas_widget.bind("<MouseWheel>", self.zoom)
+        self.canvas_widget.bind("<ButtonPress-1>", self.start_drag)  # Iniciar arrastre
+        self.canvas_widget.bind("<B1-Motion>", self.drag)  # Arrastrar
+
         self.ax.set_xlim(-10, 100)
         self.ax.set_ylim(-10, 100)
         self.ax.grid()
@@ -191,8 +202,8 @@ class PlotFrame(ttk.Frame):
             if opt == 3: result = self.draw_orthocenter(cpoints)
 
         # Configurar los límites de los ejes para mejor visualización
-        self.ax.set_xlim(-10, 100)
-        self.ax.set_ylim(-10, 100)
+        self.ax.set_xlim(-20, 20)
+        self.ax.set_ylim(-20, 20)
         self.ax.grid()
 
         self.ax.set_aspect('equal', 'box')
@@ -202,4 +213,58 @@ class PlotFrame(ttk.Frame):
 
         if opt != None: return result
 
-    pass
+    def zoom(self, event):
+        """Controla el zoom del gráfico usando la rueda del mouse."""
+        base_scale = 1.2  # Factor de zoom
+        xdata = event.x  # Coordenada x del mouse en el canvas
+        ydata = event.y  # Coordenada y del mouse en el canvas
+
+        # Determinar si el zoom es hacia adentro o hacia afuera
+        if event.delta > 0:
+            scale_factor = base_scale
+        else:
+            scale_factor = 1 / base_scale
+
+        # Obtener los límites actuales
+        xlim = self.ax.get_xlim()
+        ylim = self.ax.get_ylim()
+        
+        # Calcular nuevos límites
+        x_center = (xlim[0] + xlim[1]) / 2
+        y_center = (ylim[0] + ylim[1]) / 2
+        x_range = (xlim[1] - xlim[0]) / scale_factor
+        y_range = (ylim[1] - ylim[0]) / scale_factor
+        
+        self.ax.set_xlim([x_center - x_range / 2, x_center + x_range / 2])
+        self.ax.set_ylim([y_center - y_range / 2, y_center + y_range / 2])
+        
+        # Redibujar el gráfico
+        self.canvas.draw()
+        
+    def start_drag(self, event):
+        """Captura la posición inicial al hacer clic para arrastrar."""
+        self.drag_start = event.x, event.y
+
+    def drag(self, event):
+        """Permite mover el gráfico arrastrando con el mouse."""
+        if self.drag_start is None:
+            return
+
+        # Obtener las diferencias de movimiento
+        dx = event.x - self.drag_start[0]
+        dy = event.y - self.drag_start[1]
+
+        # Calcular cuánto mover los límites actuales
+        xlim = self.ax.get_xlim()
+        ylim = self.ax.get_ylim()
+
+        x_shift = -dx * (xlim[1] - xlim[0]) / self.canvas_widget.winfo_width()
+        y_shift = dy * (ylim[1] - ylim[0]) / self.canvas_widget.winfo_height()
+
+        # Establecer nuevos límites
+        self.ax.set_xlim([xlim[0] + x_shift, xlim[1] + x_shift])
+        self.ax.set_ylim([ylim[0] + y_shift, ylim[1] + y_shift])
+
+        # Actualizar el gráfico
+        self.drag_start = event.x, event.y
+        self.canvas.draw()
