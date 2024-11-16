@@ -37,6 +37,8 @@ class PlotFrame(ttk.Frame):
             self.ax.plot(x, y, marker='o', color='green')  # Dibuja el punto medio
             self.ax.text(x, y, label, fontsize=10, ha='left', color='green')  # Añade la etiqueta
 
+        return midpoints
+
     def carculate_baricenter(self, points):
         return (
             (points['A'][0] + points['B'][0] + points['C'][0]) / 3,
@@ -66,6 +68,8 @@ class PlotFrame(ttk.Frame):
         self.ax.plot(baricentro[0], baricentro[1], marker='o', color='purple')  # Dibujar el baricentro
         self.ax.text(baricentro[0], baricentro[1], 'G', fontsize=12, ha='left', color='purple')  # Etiqueta del baricentro
 
+        return baricentro
+
     def calculate_circumcenter(self, A, B, C):
         # Extraer coordenadas
         x1, y1 = A
@@ -91,7 +95,7 @@ class PlotFrame(ttk.Frame):
         self.ax.plot(circuncentro[0], circuncentro[1], marker='o', color='orange')
         self.ax.text(circuncentro[0], circuncentro[1], 'Circuncentro', fontsize=12, ha='left', color='orange')
 
-        pass
+        return circuncentro
 
     def calculate_orthocenter(self, A, B, C):
         def perpendicular_line_through_point(p1, p2, p3):
@@ -167,6 +171,8 @@ class PlotFrame(ttk.Frame):
         # Dibujar las alturas
         self.draw_altitudes(points['A'], points['B'], points['C'], ortocentro)
 
+        return ortocentro
+
     def draw_triangle(self, points, opt):
         # Limpiar el gráfico anterior
         self.ax.clear()
@@ -179,10 +185,10 @@ class PlotFrame(ttk.Frame):
 
         self.draw_sides(cpoints)
         if opt != None:
-            if opt == 0: self.draw_baricenter(cpoints)
-            if opt == 1: self.draw_midpoints(cpoints)
-            if opt == 2: self.draw_cincurcenter(cpoints)
-            if opt == 3: self.draw_orthocenter(cpoints)
+            if opt == 0: result = self.draw_baricenter(cpoints)
+            if opt == 1: result = self.draw_midpoints(cpoints)
+            if opt == 2: result = self.draw_cincurcenter(cpoints)
+            if opt == 3: result = self.draw_orthocenter(cpoints)
 
         # Configurar los límites de los ejes para mejor visualización
         self.ax.set_xlim(-10, 100)
@@ -193,5 +199,7 @@ class PlotFrame(ttk.Frame):
 
         # Actualizar el canvas
         self.canvas.draw()
+
+        if opt != None: return result
 
     pass
