@@ -9,6 +9,8 @@
 ## requerimientos
 - python3
 ## Instalacion
+### produccion
+Solo abrir el archivo ```dist/main.exe``` 
 ### desarrollo
 - clonar el proyecto
 - iniciar un punto entorno virtual ```python -m venv .venv```
