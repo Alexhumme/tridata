@@ -34,7 +34,14 @@ class Tridata(tk.Tk):
         
         self.userbar:Userbar = Userbar(self.app_container)
         self.userbar.grid(row=0, sticky="nsew", padx=5, pady=5)
-        self.userbar.pointsCard.sendButton.config(command=self.update_values)
+        self.userbar.pointsCard.sendButton.config(command=lambda : self.update_values(None))
+
+
+        self.userbar.optsCard.opts[0].config(command=lambda : self.update_values(0))
+        self.userbar.optsCard.opts[1].config(command=lambda : self.update_values(1))
+        self.userbar.optsCard.opts[2].config(command=lambda : self.update_values(2))
+        self.userbar.optsCard.opts[3].config(command=lambda : self.update_values(3))
+
 
         self.plot_frame:PlotFrame = PlotFrame(self.app_container)
         self.plot_frame.grid(row=1, sticky="nsew", padx=5, pady=0)
@@ -52,7 +59,7 @@ class Tridata(tk.Tk):
                 float(self.userbar.pointsCard.byField.get())
             ),
             (
-                float(self.userbar.pointsCard.cyField.get()),
+                float(self.userbar.pointsCard.cxField.get()),
                 float(self.userbar.pointsCard.cyField.get())
             ),
             (
@@ -62,9 +69,9 @@ class Tridata(tk.Tk):
         ]
         return points
     
-    def update_values(self):
+    def update_values(self, opt):
         points = self.get_points()
-        self.plot_frame.draw_triangle(points)
+        self.plot_frame.draw_triangle(points, opt)
         self.userbar.distancesCard.update_distances(points)
 
 def main():
