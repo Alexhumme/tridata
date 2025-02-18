@@ -10,7 +10,7 @@
 - python3
 ## Instalacion
 ### produccion
-Solo abrir el archivo ```dist/main.exe``` 
+Descargar desde  ``` releases ```  la version mas reciente
 ### desarrollo
 - clonar el proyecto
 - iniciar un nuevo entorno virtual ```python -m venv .venv```
